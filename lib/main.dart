@@ -12,6 +12,7 @@ import 'package:MangaLo/providers/download_provider.dart';
 import 'package:MangaLo/providers/history_provider.dart';
 import 'package:MangaLo/providers/settings_provider.dart';
 import 'package:MangaLo/firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,9 +39,7 @@ class MyApp extends StatelessWidget {
             title: 'MangaLo',
             theme: ThemeData(
               primarySwatch: Colors.pink,
-              textTheme: GoogleFonts.nunitoTextTheme(
-                Theme.of(context).textTheme,
-              ),
+              textTheme: GoogleFonts.nunitoTextTheme().apply(),
               appBarTheme: AppBarTheme(
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black87,
@@ -49,16 +48,14 @@ class MyApp extends StatelessWidget {
                   color: Colors.black87,
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                ),
+                ).copyWith(inherit: true),
               ),
               scaffoldBackgroundColor: Colors.grey[50],
             ),
             darkTheme: ThemeData.dark().copyWith(
               primaryColor: Colors.pink,
               textTheme: GoogleFonts.nunitoTextTheme(
-                ThemeMode.dark == ThemeMode.dark
-                    ? Typography.whiteMountainView
-                    : Typography.blackMountainView,
+                Typography.whiteMountainView,
               ),
               appBarTheme: AppBarTheme(
                 backgroundColor: Colors.grey[900],
@@ -67,24 +64,11 @@ class MyApp extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                ),
+                ).copyWith(inherit: true),
               ),
             ),
             themeMode: _mapAppThemeModeToFlutter(settingsProvider.themeMode),
-            home: Consumer<AuthProvider>(
-              builder: (context, authProvider, child) {
-                if (authProvider.status == AuthStatus.initial ||
-                    authProvider.status == AuthStatus.loading) {
-                  return const Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
-                  );
-                } else if (authProvider.isAuthenticated) {
-                  return const MainScreen();
-                } else {
-                  return const LoginScreen();
-                }
-              },
-            ),
+            home: const RootScreen(), // 🔄 Redirect logic now moved here!
             routes: {
               '/login': (context) => const LoginScreen(),
               '/home': (context) => const MainScreen(),
@@ -92,6 +76,29 @@ class MyApp extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+// 🔁 Root screen handles auth logic outside theme rebuilds
+class RootScreen extends StatelessWidget {
+  const RootScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, child) {
+        if (authProvider.status == AuthStatus.initial ||
+            authProvider.status == AuthStatus.loading) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else if (authProvider.isAuthenticated) {
+          return const MainScreen();
+        } else {
+          return const LoginScreen();
+        }
+      },
     );
   }
 }
@@ -109,6 +116,7 @@ ThemeMode _mapAppThemeModeToFlutter(AppThemeMode mode) {
   }
 }
 
+// Bottom navigation screen
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
