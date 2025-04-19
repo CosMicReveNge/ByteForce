@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:manga_reader/models/manga.dart';
-import 'package:manga_reader/models/chapter.dart';
+import 'package:testflutter/models/manga.dart';
+import 'package:testflutter/models/chapter.dart';
 
 class MangaProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

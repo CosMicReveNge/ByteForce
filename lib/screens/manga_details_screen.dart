@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:manga_reader/models/manga.dart';
-import 'package:manga_reader/models/chapter.dart';
-import 'package:manga_reader/providers/manga_provider.dart';
-import 'package:manga_reader/screens/manga_reader_screen.dart';
-import 'package:manga_reader/widgets/star_rating.dart';
+import 'package:testflutter/models/manga.dart';
+import 'package:testflutter/models/chapter.dart';
+import 'package:testflutter/providers/manga_provider.dart';
+import 'package:testflutter/screens/manga_reader_screen.dart';
+import 'package:testflutter/widgets/star_rating.dart';
 
 class MangaDetailScreen extends StatefulWidget {
   final String mangaId;
@@ -78,13 +78,13 @@ class _MangaDetailScreenState extends State<MangaDetailScreen> {
                           children: [
                             Text(
                               _manga!.title,
-                              style: Theme.of(context).textTheme.headline5
+                              style: Theme.of(context).textTheme.headlineMedium
                                   ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               'by ${_manga!.author}',
-                              style: Theme.of(context).textTheme.subtitle1
+                              style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(color: Colors.grey[600]),
                             ),
                           ],
@@ -113,12 +113,12 @@ class _MangaDetailScreenState extends State<MangaDetailScreen> {
                   const SizedBox(height: 16),
                   Text(
                     'Description',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     _manga!.description,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 24),
                   Row(
@@ -126,11 +126,11 @@ class _MangaDetailScreenState extends State<MangaDetailScreen> {
                     children: [
                       Text(
                         'Chapters',
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       Text(
                         '${_manga!.chapterCount} chapters',
-                        style: Theme.of(context).textTheme.subtitle2,
+                        style: Theme.of(context).textTheme.titleSmall,
                       ),
                     ],
                   ),
@@ -248,7 +248,7 @@ class ChapterListItem extends StatelessWidget {
               ElevatedButton(
                 onPressed: onTap,
                 style: ElevatedButton.styleFrom(
-                  primary: chapter.isRead ? Colors.grey : null,
+                  backgroundColor: chapter.isRead ? Colors.grey : null,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
