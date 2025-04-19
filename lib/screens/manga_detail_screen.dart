@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:testflutter/models/manga.dart';
-import 'package:testflutter/models/chapter.dart';
-import 'package:testflutter/providers/manga_provider.dart';
-import 'package:testflutter/screens/manga_reader_screen.dart';
-import 'package:testflutter/widgets/star_rating.dart';
+import 'package:MangaLo/models/manga.dart';
+import 'package:MangaLo/models/chapter.dart';
+import 'package:MangaLo/providers/manga_provider.dart';
+import 'package:MangaLo/screens/manga_reader_screen.dart';
+import 'package:MangaLo/widgets/star_rating.dart';
 
 class MangaDetailScreen extends StatefulWidget {
   final String mangaId;

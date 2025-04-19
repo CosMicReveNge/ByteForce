@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:testflutter/models/manga.dart';
-import 'package:testflutter/providers/manga_provider.dart';
-import 'package:testflutter/screens/manga_detail_screen.dart';
-import 'package:testflutter/widgets/manga_card.dart';
+import 'package:MangaLo/models/manga.dart';
+import 'package:MangaLo/providers/manga_provider.dart';
+import 'package:MangaLo/screens/manga_detail_screen.dart';
+import 'package:MangaLo/widgets/manga_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

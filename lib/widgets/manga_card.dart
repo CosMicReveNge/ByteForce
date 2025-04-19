@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:testflutter/models/manga.dart';
-import 'package:testflutter/widgets/star_rating.dart';
+import 'package:MangaLo/models/manga.dart';
+import 'package:MangaLo/widgets/star_rating.dart';
 
 class MangaCard extends StatelessWidget {
   final Manga manga;
