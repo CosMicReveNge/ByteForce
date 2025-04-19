@@ -43,7 +43,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
 
           const Divider(),
 
-          // Date format
+          // Date format (placeholder)
           ListTile(
             title: const Text('Date format'),
             subtitle: const Text('Change how dates are displayed'),
@@ -52,7 +52,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
             },
           ),
 
-          // Time format
+          // Time format (placeholder)
           ListTile(
             title: const Text('Time format'),
             subtitle: const Text('12-hour or 24-hour format'),
@@ -65,13 +65,13 @@ class AppearanceSettingsScreen extends StatelessWidget {
     );
   }
 
-  String _getThemeModeText(ThemeMode mode) {
+  String _getThemeModeText(AppThemeMode mode) {
     switch (mode) {
-      case ThemeMode.system:
+      case AppThemeMode.system:
         return 'System default';
-      case ThemeMode.light:
+      case AppThemeMode.light:
         return 'Light';
-      case ThemeMode.dark:
+      case AppThemeMode.dark:
         return 'Dark';
       default:
         return 'System default';
@@ -86,35 +86,20 @@ class AppearanceSettingsScreen extends StatelessWidget {
             title: const Text('Theme'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
-                RadioListTile<ThemeMode>(
-                  title: const Text('System default'),
-                  value: ThemeMode.system,
-                  groupValue: provider.themeMode,
-                  onChanged: (value) {
-                    provider.setThemeMode(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-                RadioListTile<ThemeMode>(
-                  title: const Text('Light'),
-                  value: ThemeMode.light,
-                  groupValue: provider.themeMode,
-                  onChanged: (value) {
-                    provider.setThemeMode(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-                RadioListTile<ThemeMode>(
-                  title: const Text('Dark'),
-                  value: ThemeMode.dark,
-                  groupValue: provider.themeMode,
-                  onChanged: (value) {
-                    provider.setThemeMode(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+              children:
+                  AppThemeMode.values.map((mode) {
+                    return RadioListTile<AppThemeMode>(
+                      title: Text(_getThemeModeText(mode)),
+                      value: mode,
+                      groupValue: provider.themeMode,
+                      onChanged: (value) {
+                        if (value != null) {
+                          provider.setThemeMode(value);
+                          Navigator.pop(context);
+                        }
+                      },
+                    );
+                  }).toList(),
             ),
           ),
     );

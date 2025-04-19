@@ -16,6 +16,7 @@ class DownloadProvider extends ChangeNotifier {
   bool _isDownloading = false;
   int _maxConcurrentDownloads = 2;
   bool _downloadOnWifiOnly = true;
+  bool _autoDownloadNewChapters = false;
 
   List<Download> get downloads => _downloads;
   List<Download> get queue =>
@@ -25,9 +26,11 @@ class DownloadProvider extends ChangeNotifier {
   bool get isDownloading => _isDownloading;
   bool get downloadOnWifiOnly => _downloadOnWifiOnly;
   int get maxConcurrentDownloads => _maxConcurrentDownloads;
+  bool get autoDownloadNewChapters => _autoDownloadNewChapters;
 
   DownloadProvider() {
     _loadDownloads();
+    _loadUserPreferences();
   }
 
   Future<void> _loadDownloads() async {
@@ -46,6 +49,21 @@ class DownloadProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print('Error loading downloads: $e');
+    }
+  }
+
+  Future<void> _loadUserPreferences() async {
+    if (_auth.currentUser == null) return;
+
+    final doc =
+        await _firestore.collection('users').doc(_auth.currentUser!.uid).get();
+    final data = doc.data();
+    if (data != null && data.containsKey('preferences')) {
+      final prefs = data['preferences'];
+      _autoDownloadNewChapters = prefs['autoDownloadNewChapters'] ?? false;
+      _downloadOnWifiOnly = prefs['downloadOnWifiOnly'] ?? true;
+      _maxConcurrentDownloads = prefs['maxConcurrentDownloads'] ?? 2;
+      notifyListeners();
     }
   }
 
@@ -334,6 +352,17 @@ class DownloadProvider extends ChangeNotifier {
     if (_auth.currentUser != null) {
       await _firestore.collection('users').doc(_auth.currentUser!.uid).update({
         'preferences.downloadOnWifiOnly': wifiOnly,
+      });
+    }
+  }
+
+  Future<void> setAutoDownloadNewChapters(bool value) async {
+    _autoDownloadNewChapters = value;
+    notifyListeners();
+
+    if (_auth.currentUser != null) {
+      await _firestore.collection('users').doc(_auth.currentUser!.uid).update({
+        'preferences.autoDownloadNewChapters': value,
       });
     }
   }

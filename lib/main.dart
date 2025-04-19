@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
             ),
-            themeMode: settingsProvider.themeMode,
+            themeMode: _mapAppThemeModeToFlutter(settingsProvider.themeMode),
             home: Consumer<AuthProvider>(
               builder: (context, authProvider, child) {
                 if (authProvider.status == AuthStatus.initial ||
@@ -93,6 +93,19 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+// Helper to map AppThemeMode to Flutter's ThemeMode
+ThemeMode _mapAppThemeModeToFlutter(AppThemeMode mode) {
+  switch (mode) {
+    case AppThemeMode.light:
+      return ThemeMode.light;
+    case AppThemeMode.dark:
+      return ThemeMode.dark;
+    case AppThemeMode.system:
+    default:
+      return ThemeMode.system;
   }
 }
 

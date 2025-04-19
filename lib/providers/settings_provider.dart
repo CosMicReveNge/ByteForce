@@ -13,7 +13,7 @@ class SettingsProvider extends ChangeNotifier {
   late SharedPreferences _prefs;
 
   // Theme settings
-  ThemeMode _themeMode = ThemeMode.system;
+  AppThemeMode _themeMode = AppThemeMode.system;
   Color _accentColor = Colors.pink;
 
   // Reader settings
@@ -37,7 +37,7 @@ class SettingsProvider extends ChangeNotifier {
   bool _requireAuthForStartup = false;
 
   // Getters
-  ThemeMode get themeMode => _themeMode;
+  AppThemeMode get themeMode => _themeMode;
   Color get accentColor => _accentColor;
   ReadingDirection get readingDirection => _readingDirection;
   bool get keepScreenOn => _keepScreenOn;
@@ -52,24 +52,33 @@ class SettingsProvider extends ChangeNotifier {
   bool get secureMode => _secureMode;
   bool get requireAuthForStartup => _requireAuthForStartup;
 
+  // Use this for MaterialApp.themeMode
+  ThemeMode get materialThemeMode {
+    switch (_themeMode) {
+      case AppThemeMode.light:
+        return ThemeMode.light;
+      case AppThemeMode.dark:
+        return ThemeMode.dark;
+      case AppThemeMode.system:
+      default:
+        return ThemeMode.system;
+    }
+  }
+
   SettingsProvider() {
     _initSettings();
   }
 
   Future<void> _initSettings() async {
     _prefs = await SharedPreferences.getInstance();
-
-    // Load settings from SharedPreferences (for non-logged in users)
     _loadLocalSettings();
 
-    // If user is logged in, load settings from Firestore
     if (_auth.currentUser != null) {
       await _loadCloudSettings();
     }
 
     notifyListeners();
 
-    // Listen for auth state changes
     _auth.authStateChanges().listen((User? user) async {
       if (user != null) {
         await _loadCloudSettings();
@@ -79,17 +88,15 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   void _loadLocalSettings() {
-    // Theme settings
     final themeModeString = _prefs.getString('themeMode') ?? 'system';
-    _themeMode = ThemeMode.values.firstWhere(
-      (e) => e.toString() == 'ThemeMode.$themeModeString',
-      orElse: () => ThemeMode.system,
+    _themeMode = AppThemeMode.values.firstWhere(
+      (e) => e.toString() == 'AppThemeMode.$themeModeString',
+      orElse: () => AppThemeMode.system,
     );
 
     final accentColorValue = _prefs.getInt('accentColor') ?? Colors.pink.value;
     _accentColor = Color(accentColorValue);
 
-    // Reader settings
     final readingDirectionString =
         _prefs.getString('readingDirection') ?? 'leftToRight';
     _readingDirection = ReadingDirection.values.firstWhere(
@@ -101,18 +108,12 @@ class SettingsProvider extends ChangeNotifier {
     _brightness = _prefs.getDouble('brightness') ?? 1.0;
     _showPageNumber = _prefs.getBool('showPageNumber') ?? true;
     _tapToScroll = _prefs.getBool('tapToScroll') ?? true;
-
-    // Library settings
     _showUnreadOnly = _prefs.getBool('showUnreadOnly') ?? false;
     _groupBySource = _prefs.getBool('groupBySource') ?? false;
-
-    // Download settings
     _downloadOnWifiOnly = _prefs.getBool('downloadOnWifiOnly') ?? true;
     _maxConcurrentDownloads = _prefs.getInt('maxConcurrentDownloads') ?? 2;
     _autoDownloadNewChapters =
         _prefs.getBool('autoDownloadNewChapters') ?? false;
-
-    // Privacy settings
     _secureMode = _prefs.getBool('secureMode') ?? false;
     _requireAuthForStartup = _prefs.getBool('requireAuthForStartup') ?? false;
   }
@@ -128,11 +129,10 @@ class SettingsProvider extends ChangeNotifier {
       if (doc.exists && doc.data()!.containsKey('preferences')) {
         final preferences = doc.data()!['preferences'] as Map<String, dynamic>;
 
-        // Theme settings
         if (preferences.containsKey('themeMode')) {
           final themeModeString = preferences['themeMode'] as String;
-          _themeMode = ThemeMode.values.firstWhere(
-            (e) => e.toString() == 'ThemeMode.$themeModeString',
+          _themeMode = AppThemeMode.values.firstWhere(
+            (e) => e.toString() == 'AppThemeMode.$themeModeString',
             orElse: () => _themeMode,
           );
         }
@@ -141,7 +141,6 @@ class SettingsProvider extends ChangeNotifier {
           _accentColor = Color(preferences['accentColor'] as int);
         }
 
-        // Reader settings
         if (preferences.containsKey('readingDirection')) {
           final readingDirectionString =
               preferences['readingDirection'] as String;
@@ -167,7 +166,6 @@ class SettingsProvider extends ChangeNotifier {
           _tapToScroll = preferences['tapToScroll'] as bool;
         }
 
-        // Library settings
         if (preferences.containsKey('showUnreadOnly')) {
           _showUnreadOnly = preferences['showUnreadOnly'] as bool;
         }
@@ -176,7 +174,6 @@ class SettingsProvider extends ChangeNotifier {
           _groupBySource = preferences['groupBySource'] as bool;
         }
 
-        // Download settings
         if (preferences.containsKey('downloadOnWifiOnly')) {
           _downloadOnWifiOnly = preferences['downloadOnWifiOnly'] as bool;
         }
@@ -191,7 +188,6 @@ class SettingsProvider extends ChangeNotifier {
               preferences['autoDownloadNewChapters'] as bool;
         }
 
-        // Privacy settings
         if (preferences.containsKey('secureMode')) {
           _secureMode = preferences['secureMode'] as bool;
         }
@@ -206,7 +202,6 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   Future<void> _saveSettings() async {
-    // Save to SharedPreferences
     await _prefs.setString('themeMode', _themeMode.toString().split('.').last);
     await _prefs.setInt('accentColor', _accentColor.value);
     await _prefs.setString(
@@ -225,7 +220,6 @@ class SettingsProvider extends ChangeNotifier {
     await _prefs.setBool('secureMode', _secureMode);
     await _prefs.setBool('requireAuthForStartup', _requireAuthForStartup);
 
-    // Save to Firestore if user is logged in
     if (_auth.currentUser != null) {
       try {
         await _firestore.collection('users').doc(_auth.currentUser!.uid).update(
@@ -254,8 +248,8 @@ class SettingsProvider extends ChangeNotifier {
     }
   }
 
-  // Theme settings
-  Future<void> setThemeMode(ThemeMode mode) async {
+  // Setters
+  Future<void> setThemeMode(AppThemeMode mode) async {
     _themeMode = mode;
     notifyListeners();
     await _saveSettings();
@@ -267,7 +261,6 @@ class SettingsProvider extends ChangeNotifier {
     await _saveSettings();
   }
 
-  // Reader settings
   Future<void> setReadingDirection(ReadingDirection direction) async {
     _readingDirection = direction;
     notifyListeners();
@@ -298,7 +291,6 @@ class SettingsProvider extends ChangeNotifier {
     await _saveSettings();
   }
 
-  // Library settings
   Future<void> setShowUnreadOnly(bool value) async {
     _showUnreadOnly = value;
     notifyListeners();
@@ -311,7 +303,6 @@ class SettingsProvider extends ChangeNotifier {
     await _saveSettings();
   }
 
-  // Download settings
   Future<void> setDownloadOnWifiOnly(bool value) async {
     _downloadOnWifiOnly = value;
     notifyListeners();
@@ -330,7 +321,6 @@ class SettingsProvider extends ChangeNotifier {
     await _saveSettings();
   }
 
-  // Privacy settings
   Future<void> setSecureMode(bool value) async {
     _secureMode = value;
     notifyListeners();
@@ -343,9 +333,8 @@ class SettingsProvider extends ChangeNotifier {
     await _saveSettings();
   }
 
-  // Reset settings to default
   Future<void> resetSettings() async {
-    _themeMode = ThemeMode.system;
+    _themeMode = AppThemeMode.system;
     _accentColor = Colors.pink;
     _readingDirection = ReadingDirection.leftToRight;
     _keepScreenOn = true;
