@@ -1,9 +1,12 @@
+// screens/home_screen.dart (modified)
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:MangaLo/models/manga.dart';
 import 'package:MangaLo/providers/manga_provider.dart';
+import 'package:MangaLo/providers/auth_provider.dart';
 import 'package:MangaLo/screens/manga_detail_screen.dart';
+import 'package:MangaLo/screens/profile/user_profile_screen.dart';
 import 'package:MangaLo/widgets/manga_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -35,6 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final user = authProvider.user;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Manga Reader'),
@@ -45,11 +51,37 @@ class _HomeScreenState extends State<HomeScreen> {
               // TODO: Implement search functionality
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              // TODO: Implement profile screen
+          // User profile icon
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const UserProfileScreen(),
+                ),
+              );
             },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: CircleAvatar(
+                radius: 16,
+                backgroundColor: Theme.of(
+                  context,
+                ).primaryColor.withOpacity(0.2),
+                backgroundImage:
+                    user?.photoUrl != null
+                        ? NetworkImage(user!.photoUrl!)
+                        : null,
+                child:
+                    user?.photoUrl == null
+                        ? Icon(
+                          Icons.person,
+                          size: 16,
+                          color: Theme.of(context).primaryColor,
+                        )
+                        : null,
+              ),
+            ),
           ),
         ],
       ),

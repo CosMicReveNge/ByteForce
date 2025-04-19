@@ -26,6 +26,8 @@ class AuthProvider extends ChangeNotifier {
 
   void _init() {
     _auth.authStateChanges().listen((User? user) async {
+      print('🔥 authStateChanges fired. User: ${user?.email}');
+
       if (user == null) {
         _firebaseUser = null;
         _user = null;
@@ -35,6 +37,8 @@ class AuthProvider extends ChangeNotifier {
         await _fetchUserData();
         _status = AuthStatus.authenticated;
       }
+
+      print('📡 AuthProvider status updated: $_status');
       notifyListeners();
     });
   }
@@ -50,6 +54,8 @@ class AuthProvider extends ChangeNotifier {
       print('Error fetching user data: $e');
     }
   }
+
+  // providers/auth_provider.dart (update the signUp method)
 
   Future<void> signUp({
     required String email,
@@ -85,13 +91,19 @@ class AuthProvider extends ChangeNotifier {
         lastLoginAt: DateTime.now(),
       );
 
-      await _firestore.collection('users').doc(user.id).set(user.toMap());
+      // Convert DateTime objects to ISO strings for Firestore
+      final userData = user.toMap();
+
+      // Ensure we're using proper Firestore-compatible data
+      await _firestore.collection('users').doc(user.id).set(userData);
 
       _user = user;
+      _firebaseUser = userCredential.user;
       _status = AuthStatus.authenticated;
     } catch (e) {
       _status = AuthStatus.error;
       _errorMessage = _handleAuthError(e);
+      print('Registration error: $e'); // Add this for debugging
     }
     notifyListeners();
   }
@@ -104,19 +116,12 @@ class AuthProvider extends ChangeNotifier {
 
       await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-      // Update last login time
-      if (_firebaseUser != null) {
-        await _firestore.collection('users').doc(_firebaseUser!.uid).update({
-          'lastLoginAt': DateTime.now().toIso8601String(),
-        });
-      }
-
-      _status = AuthStatus.authenticated;
+      // ✅ Let authStateChanges() handle the rest
     } catch (e) {
       _status = AuthStatus.error;
       _errorMessage = _handleAuthError(e);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> signOut() async {
