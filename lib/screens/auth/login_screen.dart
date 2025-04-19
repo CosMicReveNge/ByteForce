@@ -34,7 +34,14 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passwordController.text,
       );
 
-      if (authProvider.status == AuthStatus.error) {
+      if (authProvider.status == AuthStatus.authenticated) {
+        if (mounted) {
+          Navigator.pushReplacementNamed(
+            context,
+            '/home',
+          ); // 👈 Ensure '/home' is registered
+        }
+      } else if (authProvider.status == AuthStatus.error) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
