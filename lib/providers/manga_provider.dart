@@ -8,12 +8,15 @@ class MangaProvider extends ChangeNotifier {
 
   List<Manga> _recentlyRead = [];
   List<Manga> _newlyAdded = [];
+  List<Manga> _library = [];
   List<Chapter> _chapters = [];
 
   List<Manga> get recentlyRead => _recentlyRead;
   List<Manga> get newlyAdded => _newlyAdded;
+  List<Manga> get library => _library;
   List<Chapter> get chapters => _chapters;
 
+  // Fetch recently read manga
   Future<void> fetchRecentlyRead() async {
     try {
       final snapshot =
@@ -32,6 +35,7 @@ class MangaProvider extends ChangeNotifier {
     }
   }
 
+  // Fetch newly added manga
   Future<void> fetchNewlyAdded() async {
     try {
       final snapshot =
@@ -50,6 +54,20 @@ class MangaProvider extends ChangeNotifier {
     }
   }
 
+  // Fetch full library of manga
+  Future<void> fetchLibrary() async {
+    try {
+      final snapshot = await _firestore.collection('manga').get();
+
+      _library = snapshot.docs.map((doc) => Manga.fromMap(doc.data())).toList();
+
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching manga library: $e');
+    }
+  }
+
+  // Fetch detailed info for a specific manga
   Future<Manga?> getMangaDetails(String mangaId) async {
     try {
       final doc = await _firestore.collection('manga').doc(mangaId).get();
@@ -63,6 +81,7 @@ class MangaProvider extends ChangeNotifier {
     }
   }
 
+  // Fetch chapters for a specific manga
   Future<void> fetchChapters(String mangaId) async {
     try {
       final snapshot =
@@ -81,6 +100,7 @@ class MangaProvider extends ChangeNotifier {
     }
   }
 
+  // Mark a chapter as read
   Future<void> markChapterAsRead(String chapterId) async {
     try {
       await _firestore.collection('chapters').doc(chapterId).update({
