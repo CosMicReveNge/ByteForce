@@ -1,10 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:MangaLo/providers/download_provider.dart';
-import 'package:MangaLo/models/download.dart';
+
+enum DownloadStatus { queued, downloading, completed, failed }
+
+class Download {
+  final String id;
+  final String title;
+  final int chapterNumber;
+  double progress;
+  DownloadStatus status;
+  DateTime? completedAt;
+
+  Download({
+    required this.id,
+    required this.title,
+    required this.chapterNumber,
+    required this.progress,
+    required this.status,
+    this.completedAt,
+  });
+}
+
+class DownloadProvider with ChangeNotifier {
+  final List<Download> _downloads = [];
+
+  List<Download> get downloads => _downloads;
+
+  void addDownload(Download download) {
+    _downloads.add(download);
+    notifyListeners();
+  }
+
+  void deleteDownload(String id) {
+    _downloads.removeWhere((download) => download.id == id);
+    notifyListeners();
+  }
+
+  void updateDownloadProgress(String id, double progress) {
+    final download = _downloads.firstWhere((d) => d.id == id);
+    download.progress = progress;
+    notifyListeners();
+  }
+
+  void completeDownload(String id) {
+    final download = _downloads.firstWhere((d) => d.id == id);
+    download.status = DownloadStatus.completed;
+    download.completedAt = DateTime.now();
+    notifyListeners();
+  }
+}
 
 class DownloadQueueScreen extends StatelessWidget {
-  const DownloadQueueScreen({Key? key}) : super(key: key);
+  const DownloadQueueScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +66,6 @@ class DownloadQueueScreen extends StatelessWidget {
           bottom: const TabBar(
             tabs: [Tab(text: 'Queue'), Tab(text: 'Completed')],
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                _showDownloadSettingsDialog(context);
-              },
-            ),
-          ],
         ),
         body: TabBarView(
           children: [
@@ -42,16 +81,14 @@ class DownloadQueueScreen extends StatelessWidget {
   }
 
   Widget _buildQueueTab(BuildContext context, DownloadProvider provider) {
-    final queue =
-        provider.downloads
-            .where(
-              (d) =>
-                  d.status == DownloadStatus.queued ||
-                  d.status == DownloadStatus.downloading ||
-                  d.status == DownloadStatus.paused ||
-                  d.status == DownloadStatus.failed,
-            )
-            .toList();
+    final queue = provider.downloads
+        .where(
+          (d) =>
+              d.status == DownloadStatus.queued ||
+              d.status == DownloadStatus.downloading ||
+              d.status == DownloadStatus.failed,
+        )
+        .toList();
 
     if (queue.isEmpty) {
       return const Center(child: Text('Download queue is empty'));
@@ -67,10 +104,9 @@ class DownloadQueueScreen extends StatelessWidget {
   }
 
   Widget _buildCompletedTab(BuildContext context, DownloadProvider provider) {
-    final completed =
-        provider.downloads
-            .where((d) => d.status == DownloadStatus.completed)
-            .toList();
+    final completed = provider.downloads
+        .where((d) => d.status == DownloadStatus.completed)
+        .toList();
 
     if (completed.isEmpty) {
       return const Center(child: Text('No completed downloads'));
@@ -126,28 +162,21 @@ class DownloadQueueScreen extends StatelessWidget {
         return IconButton(
           icon: const Icon(Icons.pause),
           onPressed: () {
-            provider.pauseDownload(download.id);
+            // Pause download action can be added here if required
           },
         );
       case DownloadStatus.downloading:
         return IconButton(
           icon: const Icon(Icons.pause),
           onPressed: () {
-            provider.pauseDownload(download.id);
-          },
-        );
-      case DownloadStatus.paused:
-        return IconButton(
-          icon: const Icon(Icons.play_arrow),
-          onPressed: () {
-            provider.resumeDownload(download.id);
+            // Pause download action can be added here if required
           },
         );
       case DownloadStatus.failed:
         return IconButton(
           icon: const Icon(Icons.refresh),
           onPressed: () {
-            provider.resumeDownload(download.id);
+            // Retry download action can be added here if required
           },
         );
       case DownloadStatus.completed:
@@ -155,6 +184,8 @@ class DownloadQueueScreen extends StatelessWidget {
           icon: const Icon(Icons.check_circle),
           onPressed: null,
         );
+      default:
+        return const SizedBox.shrink(); // Empty space for unknown statuses
     }
   }
 
@@ -164,69 +195,16 @@ class DownloadQueueScreen extends StatelessWidget {
         return 'Queued';
       case DownloadStatus.downloading:
         return 'Downloading...';
-      case DownloadStatus.paused:
-        return 'Paused';
       case DownloadStatus.failed:
         return 'Failed';
       case DownloadStatus.completed:
         return 'Completed';
+      default:
+        return 'Unknown'; // For unhandled statuses
     }
   }
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}';
-  }
-
-  void _showDownloadSettingsDialog(BuildContext context) {
-    final downloadProvider = Provider.of<DownloadProvider>(
-      context,
-      listen: false,
-    );
-
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Download Settings'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SwitchListTile(
-                  title: const Text('Download on Wi-Fi only'),
-                  value: downloadProvider.downloadOnWifiOnly,
-                  onChanged: (value) {
-                    downloadProvider.setDownloadOnWifiOnly(value);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Maximum concurrent downloads'),
-                  trailing: DropdownButton<int>(
-                    value: downloadProvider.maxConcurrentDownloads,
-                    items:
-                        [1, 2, 3, 4, 5].map((value) {
-                          return DropdownMenuItem<int>(
-                            value: value,
-                            child: Text('$value'),
-                          );
-                        }).toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        downloadProvider.setMaxConcurrentDownloads(value);
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Close'),
-              ),
-            ],
-          ),
-    );
   }
 }

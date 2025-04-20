@@ -14,7 +14,7 @@ import 'package:MangaLo/screens/settings/advanced_settings_screen.dart';
 import 'package:MangaLo/screens/settings/about_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -222,10 +222,9 @@ class SettingsScreen extends StatelessWidget {
     return ListTile(
       leading: Icon(
         icon,
-        color:
-            Theme.of(context).brightness == Brightness.dark
-                ? Colors.tealAccent
-                : Theme.of(context).primaryColor,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.tealAccent
+            : Theme.of(context).primaryColor,
       ),
       title: Text(title),
       subtitle: Text(subtitle),
@@ -236,27 +235,26 @@ class SettingsScreen extends StatelessWidget {
   void _showSignOutDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Sign Out'),
-            content: const Text('Are you sure you want to sign out?'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Provider.of<AuthProvider>(context, listen: false).signOut();
-                  Navigator.pushReplacementNamed(context, '/login');
-                },
-                child: const Text('Sign Out'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Sign Out'),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Provider.of<AuthProvider>(context, listen: false).signOut();
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+            child: const Text('Sign Out'),
+          ),
+        ],
+      ),
     );
   }
 }

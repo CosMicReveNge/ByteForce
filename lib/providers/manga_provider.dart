@@ -1,130 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:MangaLo/models/manga.dart';
-import 'package:MangaLo/models/chapter.dart';
 
 class MangaProvider extends ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<MangaModel> _recentlyRead = [];
+  List<MangaModel> _newlyAdded = [];
+  List<MangaModel> _library = [];
 
-  List<Manga> _recentlyRead = [];
-  List<Manga> _newlyAdded = [];
-  List<Manga> _library = [];
-  List<Chapter> _chapters = [];
+  List<MangaModel> get recentlyRead => _recentlyRead;
+  List<MangaModel> get newlyAdded => _newlyAdded;
+  List<MangaModel> get library => _library;
 
-  List<Manga> get recentlyRead => _recentlyRead;
-  List<Manga> get newlyAdded => _newlyAdded;
-  List<Manga> get library => _library;
-  List<Chapter> get chapters => _chapters;
+  final List<MangaModel> _localManga = [
+    MangaModel(
+      id: '1',
+      title: 'One Piece',
+      pdfPath: 'assets/pdfs/onepiece.pdf',
+      coverPath: 'assets/covers/onepiece.jpg',
+      rating: 4.8,
+      genres: ['Adventure', 'Action'],
+      description: 'The story of Monkey D. Luffy...',
+    ),
+    MangaModel(
+      id: '2',
+      title: 'Jujutsu Kaisen',
+      pdfPath: 'assets/pdfs/jujutsukaisen.pdf',
+      coverPath: 'assets/covers/jjkcover.jpg',
+      rating: 4.7,
+      genres: ['Dark Fantasy'],
+      description: 'Humanity vs Titans...',
+    ),
+  ];
 
-  // Fetch recently read manga
-  Future<void> fetchRecentlyRead() async {
-    try {
-      final snapshot =
-          await _firestore
-              .collection('manga')
-              .orderBy('lastReadAt', descending: true)
-              .limit(10)
-              .get();
-
-      _recentlyRead =
-          snapshot.docs.map((doc) => Manga.fromMap(doc.data())).toList();
-
-      notifyListeners();
-    } catch (e) {
-      print('Error fetching recently read manga: $e');
-    }
+  Future<void> initializeData() async {
+    _recentlyRead = _localManga;
+    _newlyAdded = _localManga.reversed.toList();
+    _library = _localManga;
+    notifyListeners();
   }
 
-  // Fetch newly added manga
-  Future<void> fetchNewlyAdded() async {
+  Future<MangaModel?> getMangaDetails(String mangaId) async {
     try {
-      final snapshot =
-          await _firestore
-              .collection('manga')
-              .orderBy('createdAt', descending: true)
-              .limit(10)
-              .get();
-
-      _newlyAdded =
-          snapshot.docs.map((doc) => Manga.fromMap(doc.data())).toList();
-
-      notifyListeners();
+      return _localManga.firstWhere((manga) => manga.id == mangaId);
     } catch (e) {
-      print('Error fetching newly added manga: $e');
-    }
-  }
-
-  // Fetch full library of manga
-  Future<void> fetchLibrary() async {
-    try {
-      final snapshot = await _firestore.collection('manga').get();
-
-      _library = snapshot.docs.map((doc) => Manga.fromMap(doc.data())).toList();
-
-      notifyListeners();
-    } catch (e) {
-      print('Error fetching manga library: $e');
-    }
-  }
-
-  // Fetch detailed info for a specific manga
-  Future<Manga?> getMangaDetails(String mangaId) async {
-    try {
-      final doc = await _firestore.collection('manga').doc(mangaId).get();
-      if (doc.exists) {
-        return Manga.fromMap(doc.data()!);
-      }
-      return null;
-    } catch (e) {
-      print('Error fetching manga details: $e');
       return null;
     }
   }
 
-  // Fetch chapters for a specific manga
-  Future<void> fetchChapters(String mangaId) async {
-    try {
-      final snapshot =
-          await _firestore
-              .collection('chapters')
-              .where('mangaId', isEqualTo: mangaId)
-              .orderBy('number', descending: true)
-              .get();
-
-      _chapters =
-          snapshot.docs.map((doc) => Chapter.fromMap(doc.data())).toList();
-
+  void updateLastRead({required String mangaId}) {
+    final index = _localManga.indexWhere((m) => m.id == mangaId);
+    if (index != -1) {
+      _localManga[index] = _localManga[index].copyWith(
+        lastReadAt: DateTime.now(),
+      );
       notifyListeners();
-    } catch (e) {
-      print('Error fetching chapters: $e');
-    }
-  }
-
-  // Mark a chapter as read
-  Future<void> markChapterAsRead(String chapterId) async {
-    try {
-      await _firestore.collection('chapters').doc(chapterId).update({
-        'isRead': true,
-      });
-
-      // Update local state
-      final index = _chapters.indexWhere((chapter) => chapter.id == chapterId);
-      if (index != -1) {
-        final updatedChapter = Chapter(
-          id: _chapters[index].id,
-          mangaId: _chapters[index].mangaId,
-          title: _chapters[index].title,
-          number: _chapters[index].number,
-          releaseDate: _chapters[index].releaseDate,
-          pageUrls: _chapters[index].pageUrls,
-          isRead: true,
-        );
-
-        _chapters[index] = updatedChapter;
-        notifyListeners();
-      }
-    } catch (e) {
-      print('Error marking chapter as read: $e');
     }
   }
 }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:MangaLo/models/comment.dart';
-import 'package:MangaLo/models/user.dart';
 
 class CommunityProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -24,17 +23,15 @@ class CommunityProvider extends ChangeNotifier {
       _errorMessage = null;
       notifyListeners();
 
-      final snapshot =
-          await _firestore
-              .collection('communities')
-              .where('parentId', isNull: true)
-              .orderBy('createdAt', descending: true)
-              .get();
+      final snapshot = await _firestore
+          .collection('communities')
+          .where('parentId', isNull: true)
+          .orderBy('createdAt', descending: true)
+          .get();
 
-      _comments =
-          snapshot.docs
-              .map((doc) => Comment.fromMap(doc.data(), doc.id))
-              .toList();
+      _comments = snapshot.docs
+          .map((doc) => Comment.fromMap(doc.data(), doc.id))
+          .toList();
 
       _isLoading = false;
       notifyListeners();
@@ -49,12 +46,11 @@ class CommunityProvider extends ChangeNotifier {
   // Fetch replies for a specific comment
   Future<List<Comment>> fetchReplies(String commentId) async {
     try {
-      final snapshot =
-          await _firestore
-              .collection('communities')
-              .where('parentId', isEqualTo: commentId)
-              .orderBy('createdAt', descending: false)
-              .get();
+      final snapshot = await _firestore
+          .collection('communities')
+          .where('parentId', isEqualTo: commentId)
+          .orderBy('createdAt', descending: false)
+          .get();
 
       return snapshot.docs
           .map((doc) => Comment.fromMap(doc.data(), doc.id))
@@ -74,11 +70,10 @@ class CommunityProvider extends ChangeNotifier {
         return false;
       }
 
-      final userDoc =
-          await _firestore
-              .collection('users')
-              .doc(_auth.currentUser!.uid)
-              .get();
+      final userDoc = await _firestore
+          .collection('users')
+          .doc(_auth.currentUser!.uid)
+          .get();
 
       if (!userDoc.exists) {
         _errorMessage = 'User profile not found';
@@ -102,9 +97,8 @@ class CommunityProvider extends ChangeNotifier {
         parentId: parentId,
       );
 
-      final docRef = await _firestore
-          .collection('communities')
-          .add(newComment.toMap());
+      final docRef =
+          await _firestore.collection('communities').add(newComment.toMap());
 
       // If this is a reply, increment the parent's reply count
       if (parentId != null) {

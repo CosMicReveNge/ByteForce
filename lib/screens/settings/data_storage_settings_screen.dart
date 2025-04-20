@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DataStorageSettingsScreen extends StatelessWidget {
-  const DataStorageSettingsScreen({Key? key}) : super(key: key);
+  const DataStorageSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -97,28 +97,27 @@ class DataStorageSettingsScreen extends StatelessWidget {
   void _showClearDatabaseDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Clear database'),
-            content: const Text(
-              'Are you sure you want to reset all app data? This action cannot be undone.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // TODO: Implement clear database
-                  Navigator.pop(context);
-                },
-                child: const Text('Clear', style: TextStyle(color: Colors.red)),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Clear database'),
+        content: const Text(
+          'Are you sure you want to reset all app data? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              // TODO: Implement clear database
+              Navigator.pop(context);
+            },
+            child: const Text('Clear', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 }

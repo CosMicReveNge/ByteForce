@@ -138,7 +138,7 @@ packages:
     source: hosted
     version: "2.1.4"
   file:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: file
       sha256: a3b4f84adafef897088c160faf7dfffb7696046cb13ae90b508c2cbc95d3b8d4
@@ -229,10 +229,10 @@ packages:
     dependency: "direct main"
     description:
       name: fl_chart
-      sha256: "6b9eb2b3017241d05c482c01f668dd05cc909ec9a0114fdd49acd958ff2432fa"
+      sha256: f2e9137f261d0f53a820f6b829c80ba570ac915284c8e32789d973834796eca0
       url: "https://pub.dev"
     source: hosted
-    version: "0.64.0"
+    version: "0.71.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -254,6 +254,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  flutter_pdfview:
+    dependency: "direct main"
+    description:
+      name: flutter_pdfview
+      sha256: "51413e36ab3f1a2fe0edf97ebfa770e20182ea4a066bc9f292920330d9245c9d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -268,10 +276,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: e20ff62b158b96f392bfc8afe29dee1503c94fbea2cbe8186fd59b756b8ae982
+      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "6.2.1"
   http:
     dependency: transitive
     description:
@@ -292,10 +300,10 @@ packages:
     dependency: "direct main"
     description:
       name: intl
-      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
+      sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
       url: "https://pub.dev"
     source: hosted
-    version: "0.18.1"
+    version: "0.20.2"
   leak_tracker:
     dependency: transitive
     description:
@@ -393,7 +401,7 @@ packages:
     source: hosted
     version: "1.9.1"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
@@ -468,10 +476,10 @@ packages:
     dependency: transitive
     description:
       name: rxdart
-      sha256: "5c3004a4a8dbb94bd4bf5412a4def4acdaa12e12f269737a5751369e12d1a962"
+      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.28.0"
+    version: "0.27.7"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -641,10 +649,10 @@ packages:
     dependency: "direct main"
     description:
       name: timeago
-      sha256: "054cedf68706bb142839ba0ae6b135f6b68039f0b8301cbe8784ae653d5ff8de"
+      sha256: "3a38963615f1178531afa7177199e37522cf8dcbd93a144b597e32ec6d84bd9f"
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.0"
+    version: "3.2.2"
   typed_data:
     dependency: transitive
     description:
@@ -702,5 +710,5 @@ packages:
     source: hosted
     version: "1.1.0"
 sdks:
-  dart: ">=3.7.2 <4.0.0"
+  dart: ">=3.7.0 <4.0.0"
   flutter: ">=3.27.0"

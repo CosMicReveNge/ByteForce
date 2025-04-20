@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AdvancedSettingsScreen extends StatelessWidget {
-  const AdvancedSettingsScreen({Key? key}) : super(key: key);
+  const AdvancedSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

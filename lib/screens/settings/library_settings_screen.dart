@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:MangaLo/providers/settings_provider.dart';
 
 class LibrarySettingsScreen extends StatelessWidget {
-  const LibrarySettingsScreen({Key? key}) : super(key: key);
+  const LibrarySettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

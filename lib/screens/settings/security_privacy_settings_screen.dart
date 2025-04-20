@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:MangaLo/providers/settings_provider.dart';
 
 class SecurityPrivacySettingsScreen extends StatelessWidget {
-  const SecurityPrivacySettingsScreen({Key? key}) : super(key: key);
+  const SecurityPrivacySettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -110,103 +110,100 @@ class SecurityPrivacySettingsScreen extends StatelessWidget {
   void _showAuthMethodDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Authentication method'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                RadioListTile<String>(
-                  title: const Text('PIN'),
-                  value: 'pin',
-                  groupValue: 'pin', // TODO: Implement auth method
-                  onChanged: (value) {
-                    // TODO: Implement auth method
-                    Navigator.pop(context);
-                    _showSetPinDialog(context);
-                  },
-                ),
-                RadioListTile<String>(
-                  title: const Text('Biometric'),
-                  value: 'biometric',
-                  groupValue: 'pin', // TODO: Implement auth method
-                  onChanged: (value) {
-                    // TODO: Implement auth method
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+      builder: (context) => AlertDialog(
+        title: const Text('Authentication method'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<String>(
+              title: const Text('PIN'),
+              value: 'pin',
+              groupValue: 'pin', // TODO: Implement auth method
+              onChanged: (value) {
+                // TODO: Implement auth method
+                Navigator.pop(context);
+                _showSetPinDialog(context);
+              },
             ),
-          ),
+            RadioListTile<String>(
+              title: const Text('Biometric'),
+              value: 'biometric',
+              groupValue: 'pin', // TODO: Implement auth method
+              onChanged: (value) {
+                // TODO: Implement auth method
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   void _showSetPinDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Set PIN'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Enter a 4-digit PIN'),
-                const SizedBox(height: 16),
-                TextField(
-                  keyboardType: TextInputType.number,
-                  maxLength: 4,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'PIN',
-                  ),
-                ),
-              ],
+      builder: (context) => AlertDialog(
+        title: const Text('Set PIN'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Enter a 4-digit PIN'),
+            const SizedBox(height: 16),
+            TextField(
+              keyboardType: TextInputType.number,
+              maxLength: 4,
+              obscureText: true,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'PIN',
+              ),
             ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // TODO: Implement set PIN
-                  Navigator.pop(context);
-                },
-                child: const Text('Set'),
-              ),
-            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              // TODO: Implement set PIN
+              Navigator.pop(context);
+            },
+            child: const Text('Set'),
+          ),
+        ],
+      ),
     );
   }
 
   void _showClearHistoryDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Clear reading history'),
-            content: const Text(
-              'Are you sure you want to delete your reading history? This action cannot be undone.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // TODO: Implement clear history
-                  Navigator.pop(context);
-                },
-                child: const Text('Clear', style: TextStyle(color: Colors.red)),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Clear reading history'),
+        content: const Text(
+          'Are you sure you want to delete your reading history? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              // TODO: Implement clear history
+              Navigator.pop(context);
+            },
+            child: const Text('Clear', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 }

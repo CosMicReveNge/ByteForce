@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:MangaLo/providers/auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -226,23 +226,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   // Register button
                   ElevatedButton(
-                    onPressed:
-                        authProvider.status == AuthStatus.loading
-                            ? null
-                            : _register,
+                    onPressed: authProvider.status == AuthStatus.loading
+                        ? null
+                        : _register,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child:
-                        authProvider.status == AuthStatus.loading
-                            ? const CircularProgressIndicator()
-                            : const Text(
-                              'Register',
-                              style: TextStyle(fontSize: 16),
-                            ),
+                    child: authProvider.status == AuthStatus.loading
+                        ? const CircularProgressIndicator()
+                        : const Text(
+                            'Register',
+                            style: TextStyle(fontSize: 16),
+                          ),
                   ),
 
                   const SizedBox(height: 16),

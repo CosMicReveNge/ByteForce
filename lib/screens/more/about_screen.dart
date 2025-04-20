@@ -3,7 +3,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:io';
 
 class AboutScreen extends StatefulWidget {
-  const AboutScreen({Key? key}) : super(key: key);
+  const AboutScreen({super.key});
 
   @override
   State<AboutScreen> createState() => _AboutScreenState();

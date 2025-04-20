@@ -2,8 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:MangaLo/providers/download_provider.dart';
 
-class DownloadSettingsScreen extends StatelessWidget {
-  const DownloadSettingsScreen({Key? key}) : super(key: key);
+class DownloadSettingsScreen extends StatefulWidget {
+  const DownloadSettingsScreen({super.key});
+
+  @override
+  _DownloadSettingsScreenState createState() => _DownloadSettingsScreenState();
+}
+
+class _DownloadSettingsScreenState extends State<DownloadSettingsScreen> {
+  bool _downloadOnWifiOnly = true;
+  int _maxConcurrentDownloads = 3;
+  bool _autoDownloadNewChapters = true;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +33,11 @@ class DownloadSettingsScreen extends StatelessWidget {
           SwitchListTile(
             title: const Text('Download on Wi-Fi only'),
             subtitle: const Text('Only download manga when connected to Wi-Fi'),
-            value: downloadProvider.downloadOnWifiOnly,
+            value: _downloadOnWifiOnly,
             onChanged: (value) {
-              downloadProvider.setDownloadOnWifiOnly(value);
+              setState(() {
+                _downloadOnWifiOnly = value;
+              });
             },
           ),
 
@@ -35,17 +46,18 @@ class DownloadSettingsScreen extends StatelessWidget {
             title: const Text('Maximum concurrent downloads'),
             subtitle: const Text('How many chapters to download at once'),
             trailing: DropdownButton<int>(
-              value: downloadProvider.maxConcurrentDownloads,
-              items:
-                  [1, 2, 3, 4, 5].map((value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text('$value'),
-                    );
-                  }).toList(),
+              value: _maxConcurrentDownloads,
+              items: [1, 2, 3, 4, 5].map((value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text('$value'),
+                );
+              }).toList(),
               onChanged: (value) {
                 if (value != null) {
-                  downloadProvider.setMaxConcurrentDownloads(value);
+                  setState(() {
+                    _maxConcurrentDownloads = value;
+                  });
                 }
               },
             ),
@@ -66,9 +78,11 @@ class DownloadSettingsScreen extends StatelessWidget {
             subtitle: const Text(
               'Automatically download new chapters for manga in your library',
             ),
-            value: downloadProvider.autoDownloadNewChapters,
+            value: _autoDownloadNewChapters,
             onChanged: (value) {
-              downloadProvider.setAutoDownloadNewChapters(value);
+              setState(() {
+                _autoDownloadNewChapters = value;
+              });
             },
           ),
 
@@ -80,13 +94,12 @@ class DownloadSettingsScreen extends StatelessWidget {
             ),
             trailing: DropdownButton<int>(
               value: 2, // TODO: Implement download ahead
-              items:
-                  [0, 1, 2, 3, 5, 10].map((value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text(value == 0 ? 'Disabled' : '$value'),
-                    );
-                  }).toList(),
+              items: [0, 1, 2, 3, 5, 10].map((value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text(value == 0 ? 'Disabled' : '$value'),
+                );
+              }).toList(),
               onChanged: (value) {
                 // TODO: Implement download ahead
               },
@@ -122,28 +135,27 @@ class DownloadSettingsScreen extends StatelessWidget {
   void _showClearDownloadsDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Clear all downloads'),
-            content: const Text(
-              'Are you sure you want to delete all downloaded manga? This action cannot be undone.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // TODO: Implement clear all downloads
-                  Navigator.pop(context);
-                },
-                child: const Text('Clear', style: TextStyle(color: Colors.red)),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Clear all downloads'),
+        content: const Text(
+          'Are you sure you want to delete all downloaded manga? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              // TODO: Implement clear all downloads
+              Navigator.pop(context);
+            },
+            child: const Text('Clear', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 }

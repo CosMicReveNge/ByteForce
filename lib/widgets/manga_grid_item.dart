@@ -1,81 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:MangaLo/models/manga.dart';
+import 'package:MangaLo/screens/manga_pdf_viewer.dart';
 
 class MangaGridItem extends StatelessWidget {
-  final Manga manga;
+  final MangaModel manga;
   final VoidCallback onTap;
 
-  const MangaGridItem({Key? key, required this.manga, required this.onTap})
-    : super(key: key);
+  const MangaGridItem({super.key, required this.manga, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                // Cover image
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: CachedNetworkImage(
-                    imageUrl: manga.coverUrl,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    placeholder:
-                        (context, url) => Container(
-                          color: Colors.grey[300],
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                    errorWidget:
-                        (context, url, error) => Container(
-                          color: Colors.grey[300],
-                          child: const Icon(Icons.error),
-                        ),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MangaPdfViewerScreen(
+            pdfPath: manga.pdfPath,
+            mangaTitle: manga.title,
+          ),
+        ),
+      ),
+      child: Card(
+        elevation: 4.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(8.0)),
+              child: Image.asset(
+                manga.coverPath,
+                fit: BoxFit.cover,
+                height: 150.0,
+                width: double.infinity,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    manga.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                ),
-
-                // Unread badge
-                if (manga.chapterCount > 0) // TODO: Replace with unread count
-                  Positioned(
-                    top: 4,
-                    right: 4,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        '${manga.chapterCount}', // TODO: Replace with unread count
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                  const SizedBox(height: 4.0),
+                  Text(
+                    manga.genres.join(', '),
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14.0,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  const SizedBox(height: 4.0),
+                  Text(
+                    'Rating: ${manga.rating.toStringAsFixed(1)}',
+                    style: const TextStyle(
+                      color: Colors.amber,
+                      fontSize: 14.0,
                     ),
                   ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            manga.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

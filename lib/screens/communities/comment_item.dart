@@ -13,11 +13,11 @@ class CommentItem extends StatefulWidget {
   final bool isReply;
 
   const CommentItem({
-    Key? key,
+    super.key,
     required this.comment,
     required this.isAuthor,
     this.isReply = false,
-  }) : super(key: key);
+  });
 
   @override
   State<CommentItem> createState() => _CommentItemState();
@@ -52,14 +52,12 @@ class _CommentItemState extends State<CommentItem> {
         children: [
           ListTile(
             leading: CircleAvatar(
-              backgroundImage:
-                  widget.comment.userPhotoUrl != null
-                      ? NetworkImage(widget.comment.userPhotoUrl!)
-                      : null,
-              child:
-                  widget.comment.userPhotoUrl == null
-                      ? Text(widget.comment.username[0].toUpperCase())
-                      : null,
+              backgroundImage: widget.comment.userPhotoUrl != null
+                  ? NetworkImage(widget.comment.userPhotoUrl!)
+                  : null,
+              child: widget.comment.userPhotoUrl == null
+                  ? Text(widget.comment.username[0].toUpperCase())
+                  : null,
             ),
             title: Text(
               widget.comment.username,
@@ -69,13 +67,12 @@ class _CommentItemState extends State<CommentItem> {
               timeago.format(widget.comment.createdAt),
               style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             ),
-            trailing:
-                widget.isAuthor
-                    ? IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => _confirmDelete(context),
-                    )
-                    : null,
+            trailing: widget.isAuthor
+                ? IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () => _confirmDelete(context),
+                  )
+                : null,
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
@@ -88,12 +85,11 @@ class _CommentItemState extends State<CommentItem> {
                   children: [
                     // Like button
                     InkWell(
-                      onTap:
-                          isAuthenticated
-                              ? () => communityProvider.toggleLike(
+                      onTap: isAuthenticated
+                          ? () => communityProvider.toggleLike(
                                 widget.comment.id,
                               )
-                              : () => _showLoginPrompt(context),
+                          : () => _showLoginPrompt(context),
                       child: Row(
                         children: [
                           Icon(
@@ -116,10 +112,9 @@ class _CommentItemState extends State<CommentItem> {
                     // Reply button (only for top-level comments)
                     if (!widget.isReply)
                       InkWell(
-                        onTap:
-                            isAuthenticated
-                                ? () => _navigateToReply(context)
-                                : () => _showLoginPrompt(context),
+                        onTap: isAuthenticated
+                            ? () => _navigateToReply(context)
+                            : () => _showLoginPrompt(context),
                         child: Row(
                           children: [
                             const Icon(Icons.reply, size: 16),
@@ -134,35 +129,32 @@ class _CommentItemState extends State<CommentItem> {
                 // Show replies button (only for top-level comments with replies)
                 if (!widget.isReply && widget.comment.replyCount > 0)
                   TextButton(
-                    onPressed:
-                        _loadingReplies
-                            ? null
-                            : () => _toggleReplies(communityProvider),
-                    child:
-                        _loadingReplies
-                            ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                            : Text(
-                              _showReplies
-                                  ? 'Hide replies'
-                                  : 'Show ${widget.comment.replyCount} replies',
-                            ),
+                    onPressed: _loadingReplies
+                        ? null
+                        : () => _toggleReplies(communityProvider),
+                    child: _loadingReplies
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(
+                            _showReplies
+                                ? 'Hide replies'
+                                : 'Show ${widget.comment.replyCount} replies',
+                          ),
                   ),
 
                 // Replies
                 if (_showReplies && _replies.isNotEmpty)
                   Column(
-                    children:
-                        _replies.map((reply) {
-                          return CommentItem(
-                            comment: reply,
-                            isAuthor: currentUserId == reply.userId,
-                            isReply: true,
-                          );
-                        }).toList(),
+                    children: _replies.map((reply) {
+                      return CommentItem(
+                        comment: reply,
+                        isAuthor: currentUserId == reply.userId,
+                        isReply: true,
+                      );
+                    }).toList(),
                   ),
               ],
             ),
@@ -196,11 +188,10 @@ class _CommentItemState extends State<CommentItem> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder:
-            (context) => CreateCommentScreen(
-              parentId: widget.comment.id,
-              parentUsername: widget.comment.username,
-            ),
+        builder: (context) => CreateCommentScreen(
+          parentId: widget.comment.id,
+          parentUsername: widget.comment.username,
+        ),
       ),
     );
   }
@@ -208,60 +199,58 @@ class _CommentItemState extends State<CommentItem> {
   void _confirmDelete(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Delete Comment'),
-            content: const Text(
-              'Are you sure you want to delete this comment?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Provider.of<CommunityProvider>(
-                    context,
-                    listen: false,
-                  ).deleteComment(widget.comment.id);
-                },
-                child: const Text('Delete'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Comment'),
+        content: const Text(
+          'Are you sure you want to delete this comment?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Provider.of<CommunityProvider>(
+                context,
+                listen: false,
+              ).deleteComment(widget.comment.id);
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
     );
   }
 
   void _showLoginPrompt(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Sign In Required'),
-            content: const Text(
-              'You need to sign in to interact with comments.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Navigate to login screen
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: const Text('Sign In'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Sign In Required'),
+        content: const Text(
+          'You need to sign in to interact with comments.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // Navigate to login screen
+              Navigator.pushNamed(context, '/login');
+            },
+            child: const Text('Sign In'),
+          ),
+        ],
+      ),
     );
   }
 }

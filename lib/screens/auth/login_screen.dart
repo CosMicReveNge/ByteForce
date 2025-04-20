@@ -5,7 +5,7 @@ import 'package:MangaLo/screens/auth/register_screen.dart';
 import 'package:MangaLo/screens/auth/forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -74,9 +74,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: Theme.of(
                         context,
                       ).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -174,8 +174,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder:
-                                      (context) => const ForgotPasswordScreen(),
+                                  builder: (context) =>
+                                      const ForgotPasswordScreen(),
                                 ),
                               );
                             },
@@ -188,23 +188,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Login button
                       ElevatedButton(
-                        onPressed:
-                            authProvider.status == AuthStatus.loading
-                                ? null
-                                : _login,
+                        onPressed: authProvider.status == AuthStatus.loading
+                            ? null
+                            : _login,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child:
-                            authProvider.status == AuthStatus.loading
-                                ? const CircularProgressIndicator()
-                                : const Text(
-                                  'Login',
-                                  style: TextStyle(fontSize: 16),
-                                ),
+                        child: authProvider.status == AuthStatus.loading
+                            ? const CircularProgressIndicator()
+                            : const Text(
+                                'Login',
+                                style: TextStyle(fontSize: 16),
+                              ),
                       ),
 
                       const SizedBox(height: 16),

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:MangaLo/providers/download_provider.dart';
 
 class DataStorageScreen extends StatelessWidget {
-  const DataStorageScreen({Key? key}) : super(key: key);
+  const DataStorageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +46,6 @@ class DataStorageScreen extends StatelessWidget {
           // Downloaded manga
           ListTile(
             title: const Text('Downloaded manga'),
-            subtitle: Text(
-              '${downloadProvider.completed.length} manga downloaded',
-            ), // TODO: Get actual count
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
               Navigator.push(
@@ -112,90 +109,87 @@ class DataStorageScreen extends StatelessWidget {
   void _showClearCacheDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Clear cache'),
-            content: const Text(
-              'Are you sure you want to clear the app cache?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // TODO: Implement clear cache
-                  Navigator.pop(context);
-                },
-                child: const Text('Clear'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Clear cache'),
+        content: const Text(
+          'Are you sure you want to clear the app cache?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              // TODO: Implement clear cache
+              Navigator.pop(context);
+            },
+            child: const Text('Clear'),
+          ),
+        ],
+      ),
     );
   }
 
   void _showClearImageCacheDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Clear image cache'),
-            content: const Text(
-              'Are you sure you want to clear the image cache?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // TODO: Implement clear image cache
-                  Navigator.pop(context);
-                },
-                child: const Text('Clear'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Clear image cache'),
+        content: const Text(
+          'Are you sure you want to clear the image cache?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              // TODO: Implement clear image cache
+              Navigator.pop(context);
+            },
+            child: const Text('Clear'),
+          ),
+        ],
+      ),
     );
   }
 
   void _showClearDatabaseCacheDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Clear database cache'),
-            content: const Text(
-              'Are you sure you want to clear the database cache?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // TODO: Implement clear database cache
-                  Navigator.pop(context);
-                },
-                child: const Text('Clear'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Clear database cache'),
+        content: const Text(
+          'Are you sure you want to clear the database cache?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              // TODO: Implement clear database cache
+              Navigator.pop(context);
+            },
+            child: const Text('Clear'),
+          ),
+        ],
+      ),
     );
   }
 }
 
 class DownloadedMangaScreen extends StatelessWidget {
-  const DownloadedMangaScreen({Key? key}) : super(key: key);
+  const DownloadedMangaScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

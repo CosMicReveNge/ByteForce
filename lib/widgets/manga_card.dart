@@ -1,71 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:MangaLo/models/manga.dart';
-import 'package:MangaLo/widgets/star_rating.dart';
+import 'package:MangaLo/screens/manga_pdf_viewer.dart';
 
 class MangaCard extends StatelessWidget {
-  final Manga manga;
+  final MangaModel manga;
   final VoidCallback onTap;
 
-  const MangaCard({Key? key, required this.manga, required this.onTap})
-    : super(key: key);
+  const MangaCard({
+    super.key,
+    required this.manga,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 140,
-        margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MangaPdfViewerScreen(
+            pdfPath: manga.pdfPath,
+            mangaTitle: manga.title,
+          ),
         ),
+      ),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
-              ),
-              child: CachedNetworkImage(
-                imageUrl: manga.coverUrl,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
+              child: Image.asset(
+                manga.coverPath,
                 height: 180,
-                width: double.infinity,
+                width: 120,
                 fit: BoxFit.cover,
-                placeholder:
-                    (context, url) => Container(
-                      color: Colors.grey[300],
-                      child: const Center(child: CircularProgressIndicator()),
-                    ),
-                errorWidget:
-                    (context, url, error) => Container(
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.error),
-                    ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    manga.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  StarRating(rating: manga.rating),
-                ],
+              child: Text(
+                manga.title,
+                style: Theme.of(context).textTheme.bodyMedium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],

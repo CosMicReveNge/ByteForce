@@ -7,8 +7,7 @@ class CreateCommentScreen extends StatefulWidget {
   final String? parentId;
   final String? parentUsername;
 
-  const CreateCommentScreen({Key? key, this.parentId, this.parentUsername})
-    : super(key: key);
+  const CreateCommentScreen({super.key, this.parentId, this.parentUsername});
 
   @override
   State<CreateCommentScreen> createState() => _CreateCommentScreenState();
@@ -49,9 +48,7 @@ class _CreateCommentScreenState extends State<CreateCommentScreen> {
                     ),
                   ),
                 ),
-
               const SizedBox(height: 16),
-
               TextFormField(
                 controller: _contentController,
                 decoration: const InputDecoration(
@@ -70,18 +67,15 @@ class _CreateCommentScreenState extends State<CreateCommentScreen> {
                   return null;
                 },
               ),
-
               const SizedBox(height: 24),
-
               ElevatedButton(
                 onPressed: _isSubmitting ? null : _submitComment,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child:
-                    _isSubmitting
-                        ? const CircularProgressIndicator()
-                        : Text(isReply ? 'Post Reply' : 'Post Comment'),
+                child: _isSubmitting
+                    ? const CircularProgressIndicator()
+                    : Text(isReply ? 'Post Reply' : 'Post Comment'),
               ),
             ],
           ),

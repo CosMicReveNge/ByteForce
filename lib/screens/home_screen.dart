@@ -1,7 +1,5 @@
-// screens/home_screen.dart (modified)
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:MangaLo/models/manga.dart';
 import 'package:MangaLo/providers/manga_provider.dart';
 import 'package:MangaLo/providers/auth_provider.dart';
@@ -10,15 +8,13 @@ import 'package:MangaLo/screens/profile/user_profile_screen.dart';
 import 'package:MangaLo/widgets/manga_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
@@ -26,20 +22,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadData() async {
-    final provider = Provider.of<MangaProvider>(context, listen: false);
-    await Future.wait([
-      provider.fetchRecentlyRead(),
-      provider.fetchNewlyAdded(),
-    ]);
-    setState(() {
-      _isLoading = false;
-    });
+    await Provider.of<MangaProvider>(context, listen: false).initializeData();
   }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    final user = authProvider.user;
+    final mangaProvider = Provider.of<MangaProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -47,112 +36,99 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: Implement search functionality
-            },
+            onPressed: () {},
           ),
-          // User profile icon
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const UserProfileScreen(),
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: CircleAvatar(
-                radius: 16,
-                backgroundColor: Theme.of(
-                  context,
-                ).primaryColor.withOpacity(0.2),
-                backgroundImage:
-                    user?.photoUrl != null
-                        ? NetworkImage(user!.photoUrl!)
-                        : null,
-                child:
-                    user?.photoUrl == null
-                        ? Icon(
-                          Icons.person,
-                          size: 16,
-                          color: Theme.of(context).primaryColor,
-                        )
-                        : null,
-              ),
-            ),
-          ),
+          _buildUserAvatar(authProvider),
         ],
       ),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : RefreshIndicator(
-                onRefresh: _loadData,
-                child: CustomScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: Text(
-                          'Recently Read',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    _buildHorizontalMangaList(
-                      context.watch<MangaProvider>().recentlyRead,
-                    ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-                        child: Text(
-                          'Newly Added',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    _buildHorizontalMangaList(
-                      context.watch<MangaProvider>().newlyAdded,
-                    ),
-                  ],
-                ),
-              ),
+      body: mangaProvider.recentlyRead.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : _buildContent(mangaProvider),
     );
   }
 
-  Widget _buildHorizontalMangaList(List<Manga> mangaList) {
+  Widget _buildContent(MangaProvider provider) {
+    return RefreshIndicator(
+      onRefresh: _loadData,
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          _buildSectionHeader('Recently Read'),
+          _buildHorizontalMangaList(provider.recentlyRead),
+          _buildSectionHeader('Newly Added'),
+          _buildHorizontalMangaList(provider.newlyAdded),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHorizontalMangaList(List<MangaModel> mangaList) {
     return SliverToBoxAdapter(
       child: SizedBox(
         height: 240,
-        child:
-            mangaList.isEmpty
-                ? const Center(child: Text('No manga found'))
-                : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: mangaList.length,
-                  itemBuilder: (context, index) {
-                    final manga = mangaList[index];
-                    return MangaCard(
-                      manga: manga,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    MangaDetailScreen(mangaId: manga.id),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
+        child: ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          scrollDirection: Axis.horizontal,
+          itemCount: mangaList.length,
+          itemBuilder: (context, index) {
+            final manga = mangaList[index];
+            return MangaCard(
+              manga: manga,
+              onTap: () => _navigateToDetail(context, manga),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserAvatar(AuthProvider authProvider) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const UserProfileScreen(),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: CircleAvatar(
+          radius: 16,
+          backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+          backgroundImage: authProvider.user?.photoUrl != null
+              ? NetworkImage(authProvider.user!.photoUrl!)
+              : null,
+          child: authProvider.user?.photoUrl == null
+              ? Icon(
+                  Icons.person,
+                  size: 16,
+                  color: Theme.of(context).primaryColor,
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+
+  void _navigateToDetail(BuildContext context, MangaModel manga) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MangaDetailScreen(manga: manga),
       ),
     );
   }

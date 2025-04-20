@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CategoriesScreen extends StatefulWidget {
-  const CategoriesScreen({Key? key}) : super(key: key);
+  const CategoriesScreen({super.key});
 
   @override
   State<CategoriesScreen> createState() => _CategoriesScreenState();
@@ -57,37 +57,36 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Add category'),
-            content: TextField(
-              controller: controller,
-              decoration: const InputDecoration(
-                labelText: 'Category name',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  final categoryName = controller.text.trim();
-                  if (categoryName.isNotEmpty) {
-                    setState(() {
-                      _categories.add(categoryName);
-                    });
-                  }
-                  Navigator.pop(context);
-                },
-                child: const Text('Add'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Add category'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            labelText: 'Category name',
+            border: OutlineInputBorder(),
           ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              final categoryName = controller.text.trim();
+              if (categoryName.isNotEmpty) {
+                setState(() {
+                  _categories.add(categoryName);
+                });
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -98,87 +97,85 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Edit category'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: controller,
-                  decoration: const InputDecoration(
-                    labelText: 'Category name',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () {
-                    _showDeleteCategoryDialog(category);
-                  },
-                  child: const Text(
-                    'Delete category',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
-              ],
+      builder: (context) => AlertDialog(
+        title: const Text('Edit category'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                labelText: 'Category name',
+                border: OutlineInputBorder(),
+              ),
             ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () {
+                _showDeleteCategoryDialog(category);
+              },
+              child: const Text(
+                'Delete category',
+                style: TextStyle(color: Colors.red),
               ),
-              TextButton(
-                onPressed: () {
-                  final newName = controller.text.trim();
-                  if (newName.isNotEmpty) {
-                    setState(() {
-                      final index = _categories.indexOf(category);
-                      if (index != -1) {
-                        _categories[index] = newName;
-                      }
-                    });
-                  }
-                  Navigator.pop(context);
-                },
-                child: const Text('Save'),
-              ),
-            ],
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              final newName = controller.text.trim();
+              if (newName.isNotEmpty) {
+                setState(() {
+                  final index = _categories.indexOf(category);
+                  if (index != -1) {
+                    _categories[index] = newName;
+                  }
+                });
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
     );
   }
 
   void _showDeleteCategoryDialog(String category) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Delete category'),
-            content: Text('Are you sure you want to delete "$category"?'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _categories.remove(category);
-                  });
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Delete',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Delete category'),
+        content: Text('Are you sure you want to delete "$category"?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _categories.remove(category);
+              });
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

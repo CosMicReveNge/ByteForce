@@ -1,37 +1,36 @@
-class Manga {
+class MangaModel {
   final String id;
   final String title;
-  final String author;
-  final String coverUrl;
+  final String pdfPath;
+  final String coverPath;
   final double rating;
   final List<String> genres;
   final String description;
-  final DateTime lastUpdated;
-  final int chapterCount;
+  final DateTime? lastReadAt;
 
-  Manga({
+  MangaModel({
     required this.id,
     required this.title,
-    required this.author,
-    required this.coverUrl,
+    required this.pdfPath,
+    required this.coverPath,
     required this.rating,
     required this.genres,
     required this.description,
-    required this.lastUpdated,
-    required this.chapterCount,
+    this.lastReadAt,
   });
 
-  factory Manga.fromMap(Map<String, dynamic> map) {
-    return Manga(
-      id: map['id'],
-      title: map['title'],
-      author: map['author'],
-      coverUrl: map['coverUrl'],
-      rating: map['rating'].toDouble(),
-      genres: List<String>.from(map['genres']),
-      description: map['description'],
-      lastUpdated: DateTime.parse(map['lastUpdated']),
-      chapterCount: map['chapterCount'],
+  MangaModel copyWith({
+    DateTime? lastReadAt,
+  }) {
+    return MangaModel(
+      id: id,
+      title: title,
+      pdfPath: pdfPath,
+      coverPath: coverPath,
+      rating: rating,
+      genres: genres,
+      description: description,
+      lastReadAt: lastReadAt ?? this.lastReadAt,
     );
   }
 }

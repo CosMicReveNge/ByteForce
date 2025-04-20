@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:MangaLo/providers/settings_provider.dart';
 
 class ReaderSettingsScreen extends StatelessWidget {
-  const ReaderSettingsScreen({Key? key}) : super(key: key);
+  const ReaderSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -118,45 +118,44 @@ class ReaderSettingsScreen extends StatelessWidget {
   ) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Reading direction'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                RadioListTile<ReadingDirection>(
-                  title: const Text('Left to right'),
-                  subtitle: const Text('Western comics style'),
-                  value: ReadingDirection.leftToRight,
-                  groupValue: provider.readingDirection,
-                  onChanged: (value) {
-                    provider.setReadingDirection(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-                RadioListTile<ReadingDirection>(
-                  title: const Text('Right to left'),
-                  subtitle: const Text('Manga style'),
-                  value: ReadingDirection.rightToLeft,
-                  groupValue: provider.readingDirection,
-                  onChanged: (value) {
-                    provider.setReadingDirection(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-                RadioListTile<ReadingDirection>(
-                  title: const Text('Vertical'),
-                  subtitle: const Text('Webtoon style'),
-                  value: ReadingDirection.vertical,
-                  groupValue: provider.readingDirection,
-                  onChanged: (value) {
-                    provider.setReadingDirection(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+      builder: (context) => AlertDialog(
+        title: const Text('Reading direction'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<ReadingDirection>(
+              title: const Text('Left to right'),
+              subtitle: const Text('Western comics style'),
+              value: ReadingDirection.leftToRight,
+              groupValue: provider.readingDirection,
+              onChanged: (value) {
+                provider.setReadingDirection(value!);
+                Navigator.pop(context);
+              },
             ),
-          ),
+            RadioListTile<ReadingDirection>(
+              title: const Text('Right to left'),
+              subtitle: const Text('Manga style'),
+              value: ReadingDirection.rightToLeft,
+              groupValue: provider.readingDirection,
+              onChanged: (value) {
+                provider.setReadingDirection(value!);
+                Navigator.pop(context);
+              },
+            ),
+            RadioListTile<ReadingDirection>(
+              title: const Text('Vertical'),
+              subtitle: const Text('Webtoon style'),
+              value: ReadingDirection.vertical,
+              groupValue: provider.readingDirection,
+              onChanged: (value) {
+                provider.setReadingDirection(value!);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

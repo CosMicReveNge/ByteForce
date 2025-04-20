@@ -7,7 +7,7 @@ import 'package:MangaLo/screens/communities/comment_item.dart';
 import 'package:MangaLo/screens/communities/create_comment_screen.dart';
 
 class CommunitiesScreen extends StatefulWidget {
-  const CommunitiesScreen({Key? key}) : super(key: key);
+  const CommunitiesScreen({super.key});
 
   @override
   State<CommunitiesScreen> createState() => _CommunitiesScreenState();
@@ -31,46 +31,43 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Communities')),
-      body:
-          communityProvider.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : communityProvider.comments.isEmpty
+      body: communityProvider.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : communityProvider.comments.isEmpty
               ? _buildEmptyState()
               : RefreshIndicator(
-                onRefresh: () => communityProvider.fetchComments(),
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(8.0),
-                  itemCount: communityProvider.comments.length,
-                  itemBuilder: (context, index) {
-                    final comment = communityProvider.comments[index];
-                    return CommentItem(
-                      comment: comment,
-                      isAuthor:
-                          isAuthenticated &&
-                          authProvider.firebaseUser?.uid == comment.userId,
-                    );
-                  },
+                  onRefresh: () => communityProvider.fetchComments(),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(8.0),
+                    itemCount: communityProvider.comments.length,
+                    itemBuilder: (context, index) {
+                      final comment = communityProvider.comments[index];
+                      return CommentItem(
+                        comment: comment,
+                        isAuthor: isAuthenticated &&
+                            authProvider.firebaseUser?.uid == comment.userId,
+                      );
+                    },
+                  ),
                 ),
-              ),
-      floatingActionButton:
-          isAuthenticated
-              ? FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CreateCommentScreen(),
-                    ),
-                  );
-                },
-                child: const Icon(Icons.add_comment),
-              )
-              : FloatingActionButton(
-                onPressed: () {
-                  _showLoginPrompt(context);
-                },
-                child: const Icon(Icons.login),
-              ),
+      floatingActionButton: isAuthenticated
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CreateCommentScreen(),
+                  ),
+                );
+              },
+              child: const Icon(Icons.add_comment),
+            )
+          : FloatingActionButton(
+              onPressed: () {
+                _showLoginPrompt(context);
+              },
+              child: const Icon(Icons.login),
+            ),
     );
   }
 
@@ -102,27 +99,26 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
   void _showLoginPrompt(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Sign In Required'),
-            content: const Text('You need to sign in to post comments.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Navigate to login screen
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: const Text('Sign In'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Sign In Required'),
+        content: const Text('You need to sign in to post comments.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // Navigate to login screen
+              Navigator.pushNamed(context, '/login');
+            },
+            child: const Text('Sign In'),
+          ),
+        ],
+      ),
     );
   }
 }

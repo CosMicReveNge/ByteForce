@@ -14,7 +14,7 @@ import 'package:MangaLo/screens/more/help_screen.dart';
 import 'package:MangaLo/screens/auth/login_screen.dart';
 
 class UserProfileScreen extends StatelessWidget {
-  const UserProfileScreen({Key? key}) : super(key: key);
+  const UserProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +38,16 @@ class UserProfileScreen extends StatelessWidget {
                   backgroundColor: Theme.of(
                     context,
                   ).primaryColor.withOpacity(0.2),
-                  backgroundImage:
-                      user?.photoUrl != null
-                          ? NetworkImage(user!.photoUrl!)
-                          : null,
-                  child:
-                      user?.photoUrl == null
-                          ? Icon(
-                            Icons.person,
-                            size: 50,
-                            color: Theme.of(context).primaryColor,
-                          )
-                          : null,
+                  backgroundImage: user?.photoUrl != null
+                      ? NetworkImage(user!.photoUrl!)
+                      : null,
+                  child: user?.photoUrl == null
+                      ? Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Theme.of(context).primaryColor,
+                        )
+                      : null,
                 ),
                 const SizedBox(height: 16),
 
@@ -224,26 +222,25 @@ class UserProfileScreen extends StatelessWidget {
   void _showSignOutDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Sign Out'),
-            content: const Text('Are you sure you want to sign out?'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Provider.of<AuthProvider>(context, listen: false).signOut();
-                },
-                child: const Text('Sign Out'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Sign Out'),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Provider.of<AuthProvider>(context, listen: false).signOut();
+            },
+            child: const Text('Sign Out'),
+          ),
+        ],
+      ),
     );
   }
 }

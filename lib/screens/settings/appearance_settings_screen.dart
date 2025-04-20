@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:MangaLo/providers/settings_provider.dart';
 
 class AppearanceSettingsScreen extends StatelessWidget {
-  const AppearanceSettingsScreen({Key? key}) : super(key: key);
+  const AppearanceSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -81,27 +81,25 @@ class AppearanceSettingsScreen extends StatelessWidget {
   void _showThemeModeDialog(BuildContext context, SettingsProvider provider) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Theme'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children:
-                  AppThemeMode.values.map((mode) {
-                    return RadioListTile<AppThemeMode>(
-                      title: Text(_getThemeModeText(mode)),
-                      value: mode,
-                      groupValue: provider.themeMode,
-                      onChanged: (value) {
-                        if (value != null) {
-                          provider.setThemeMode(value);
-                          Navigator.pop(context);
-                        }
-                      },
-                    );
-                  }).toList(),
-            ),
-          ),
+      builder: (context) => AlertDialog(
+        title: const Text('Theme'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: AppThemeMode.values.map((mode) {
+            return RadioListTile<AppThemeMode>(
+              title: Text(_getThemeModeText(mode)),
+              value: mode,
+              groupValue: provider.themeMode,
+              onChanged: (value) {
+                if (value != null) {
+                  provider.setThemeMode(value);
+                  Navigator.pop(context);
+                }
+              },
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 
@@ -127,38 +125,35 @@ class AppearanceSettingsScreen extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Accent color'),
-            content: Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children:
-                  colors.map((color) {
-                    return InkWell(
-                      onTap: () {
-                        provider.setAccentColor(color);
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color:
-                                provider.accentColor == color
-                                    ? Colors.white
-                                    : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-            ),
-          ),
+      builder: (context) => AlertDialog(
+        title: const Text('Accent color'),
+        content: Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: colors.map((color) {
+            return InkWell(
+              onTap: () {
+                provider.setAccentColor(color);
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: provider.accentColor == color
+                        ? Colors.white
+                        : Colors.transparent,
+                    width: 2,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 }
