@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:MangaLo/models/manga.dart';
-import 'package:MangaLo/screens/manga_pdf_viewer.dart';
+import 'package:MangaLo/screens/manga_pdf_viewer.dart'; // ✅ Correct import
 
 class MangaGridItem extends StatelessWidget {
   final MangaModel manga;
@@ -11,15 +11,16 @@ class MangaGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MangaPdfViewerScreen(
-            pdfPath: manga.pdfPath,
-            mangaTitle: manga.title,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MangaPdfViewer(
+              pdfAssetPath: 'assets/pdfs/${manga.pdfPath}', // ✅ Fixed path
+            ),
           ),
-        ),
-      ),
+        );
+      },
       child: Card(
         elevation: 4.0,
         shape: RoundedRectangleBorder(
@@ -32,10 +33,18 @@ class MangaGridItem extends StatelessWidget {
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(8.0)),
               child: Image.asset(
-                manga.coverPath,
+                'assets/covers/${manga.coverPath}', // ✅ Make sure it's prefixed
                 fit: BoxFit.cover,
                 height: 150.0,
                 width: double.infinity,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 150.0,
+                    color: Colors.grey[300],
+                    child:
+                        const Center(child: Icon(Icons.broken_image, size: 40)),
+                  );
+                },
               ),
             ),
             Padding(

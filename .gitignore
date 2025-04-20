@@ -18,10 +18,8 @@ migrate_working_dir/
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# VS Code settings (optional: remove the # if you want to ignore it)
+# .vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -29,9 +27,11 @@ migrate_working_dir/
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
 /build/
+*.lock
 
 # Symbolication related
 app.*.symbols
@@ -39,8 +39,23 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
+# Android Studio build folders
 /android/app/debug
 /android/app/profile
 /android/app/release
-assets/
+
+# Assets (DON'T ignore the entire folder; only ignore temp/untracked stuff)
+# Prevent ignoring the whole assets folder
+# ! ensures these folders ARE tracked by Git
+# You can ignore unwanted temp files or `.DS_Store` inside
+# But track your covers and pdfs!
+
+# Ignore nothing in the main assets directory
+!assets/
+!assets/covers/
+!assets/pdfs/
+
+# Ignore unwanted files inside assets if any
+assets/**/*.tmp
+assets/**/*.bak
+assets/**/*.DS_Store

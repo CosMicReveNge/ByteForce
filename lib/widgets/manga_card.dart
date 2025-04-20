@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:MangaLo/models/manga.dart';
-import 'package:MangaLo/screens/manga_pdf_viewer.dart';
+import 'package:MangaLo/screens/manga_pdf_viewer.dart'; // ✅ Make sure this import is correct
 
 class MangaCard extends StatelessWidget {
   final MangaModel manga;
-  final VoidCallback onTap;
 
   const MangaCard({
     super.key,
     required this.manga,
-    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MangaPdfViewerScreen(
-            pdfPath: manga.pdfPath,
-            mangaTitle: manga.title,
+      onTap: () async {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                MangaPdfViewer(pdfAssetPath: 'assets/pdfs/${manga.pdfPath}'),
           ),
-        ),
-      ),
+        );
+      },
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -33,10 +31,18 @@ class MangaCard extends StatelessWidget {
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
               child: Image.asset(
-                manga.coverPath,
+                'assets/covers/${manga.coverPath}',
                 height: 180,
                 width: 120,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 180,
+                    width: 120,
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.broken_image, size: 40),
+                  );
+                },
               ),
             ),
             Padding(

@@ -86,10 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: mangaList.length,
           itemBuilder: (context, index) {
             final manga = mangaList[index];
-            return MangaCard(
-              manga: manga,
-              onTap: () => _navigateToDetail(context, manga),
-            );
+            return MangaCard(manga: manga); // ✅ Updated
           },
         ),
       ),

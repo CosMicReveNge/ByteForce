@@ -37,9 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (authProvider.status == AuthStatus.authenticated) {
         if (mounted) {
           Navigator.pushReplacementNamed(
-            context,
-            '/home',
-          ); // 👈 Ensure '/home' is registered
+              context, '/home'); // 👈 Ensure '/home' is registered
         }
       } else if (authProvider.status == AuthStatus.error) {
         if (mounted) {

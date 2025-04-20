@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:MangaLo/models/manga.dart';
 
 class MangaProvider extends ChangeNotifier {
+  bool _isLoading = true;
+  List<MangaModel> _mangaList = [];
+
+  bool get isLoading => _isLoading;
+  List<MangaModel> get mangaList => _mangaList;
+
   List<MangaModel> _recentlyRead = [];
   List<MangaModel> _newlyAdded = [];
   List<MangaModel> _library = [];
@@ -14,7 +20,7 @@ class MangaProvider extends ChangeNotifier {
     MangaModel(
       id: '1',
       title: 'One Piece',
-      pdfPath: 'assets/pdfs/onepiece.pdf',
+      pdfPath: 'one_piece_vol01.pdf',
       coverPath: 'assets/covers/onepiece.jpg',
       rating: 4.8,
       genres: ['Adventure', 'Action'],
@@ -23,18 +29,27 @@ class MangaProvider extends ChangeNotifier {
     MangaModel(
       id: '2',
       title: 'Jujutsu Kaisen',
-      pdfPath: 'assets/pdfs/jujutsukaisen.pdf',
+      pdfPath: 'jujutsu_kaisen_vol01.pdf',
       coverPath: 'assets/covers/jjkcover.jpg',
       rating: 4.7,
       genres: ['Dark Fantasy'],
-      description: 'Humanity vs Titans...',
+      description: 'A world of curses and sorcerers...',
     ),
   ];
 
   Future<void> initializeData() async {
+    _isLoading = true;
+    notifyListeners();
+
+    // Simulate a short loading delay
+    await Future.delayed(const Duration(seconds: 1));
+
+    _mangaList = _localManga;
     _recentlyRead = _localManga;
     _newlyAdded = _localManga.reversed.toList();
     _library = _localManga;
+
+    _isLoading = false;
     notifyListeners();
   }
 
